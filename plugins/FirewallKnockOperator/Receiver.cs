@@ -7,27 +7,26 @@ using System.Text;
 
 namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 {
-    internal class FKOReceiver : FKO, IKnockDetector
+    internal class Receiver : Base, IKnockDetector
     {
-        public required ILogger<FKOSender> Logger { private get; init; }
+        public required ILogger<Sender> Logger { private get; init; }
 
         IEnumerable<KnockEvent> IKnockDetector.Examine(IPPacket packet, SharedSecret secret)
         {
             if (packet.PayloadPacket is TransportPacket transport)
             {
-                FKOData data;
+                Packet data;
                 try
                 {
                     var bytes = TransformPayload(transport.PayloadData);
 
-                    if (secret.AuthKey is byte[] hmacKey)
+                    if (secret.Auth is HMAC auth)
                     {
-                        using var hm = new HMACSHA256(hmacKey);
+                        int length = auth.HashSize / 8;
 
-                        byte[] hmac = bytes[^32..]; bytes = bytes[..^32]; // chop off 32 bytes HMAC-SHA256
+                        byte[] hmac = bytes[^length..]; bytes = bytes[..^length]; // chop off HMAC by its length
 
-                        // 4) verify HMAC: HMAC_SHA256( salt || ct )
-                        if (!hmac.SequenceEqual(hm.ComputeHash(Encoding.ASCII.GetBytes(EncodeBase64(bytes)))))
+                        if (!hmac.SequenceEqual(CalculateHMAC(EncodeBase64(bytes), auth)))
                         {
                             throw new CryptographicException("HMAC verification FAILED.");
                         }
@@ -43,7 +42,7 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
                     // TODO: verify HMAC if secret.AuthKey is set
                     // TODO: verify plaintext
 
-                    data = new FKOData(plaintext);
+                    data = new Packet(plaintext);
                 }
                 catch (Exception ex)
                 {

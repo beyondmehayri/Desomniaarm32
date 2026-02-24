@@ -1,5 +1,6 @@
 ﻿using MadWizard.Desomnia.Network.Configuration.Filter;
 using MadWizard.Desomnia.Network.Configuration.Hosts;
+using MadWizard.Desomnia.Network.Knocking.Secrets;
 using System.Net;
 
 namespace MadWizard.Desomnia.Network.Configuration.Knocking
@@ -23,7 +24,7 @@ namespace MadWizard.Desomnia.Network.Configuration.Knocking
         public string?  Label { get; init; }
 
         public KeyData? Key { get; set; }
-        public KeyData? AuthKey { get; set; }
+        public AuthKeyData? AuthKey { get; set; }
 
         public bool Passthrough { get; set; } = false;
 
@@ -39,5 +40,10 @@ namespace MadWizard.Desomnia.Network.Configuration.Knocking
         public string? Encoding { get; set; }
 
         public string? Text { get; set; }
+    }
+
+    public class AuthKeyData : KeyData
+    {
+        public DigestType Type { get; set; } = DigestType.Default;
     }
 }

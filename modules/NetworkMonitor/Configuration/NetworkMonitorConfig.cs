@@ -4,6 +4,7 @@ using MadWizard.Desomnia.Network.Configuration.Filter;
 using MadWizard.Desomnia.Network.Configuration.Hosts;
 using MadWizard.Desomnia.Network.Configuration.Knocking;
 using MadWizard.Desomnia.Network.Configuration.Options;
+using MadWizard.Desomnia.Network.Knocking.Secrets;
 using System.ComponentModel;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -69,6 +70,7 @@ namespace MadWizard.Desomnia.Network.Configuration
         // Network :: KnockSecret
         internal string? KnockSecret { get; set; }
         internal string? KnockSecretAuth { get; set; }
+        internal DigestType KnockSecretAuthType { get; set; } = default;
         internal string KnockEncoding { get; set; } = "UTF-8";
         #endregion
 

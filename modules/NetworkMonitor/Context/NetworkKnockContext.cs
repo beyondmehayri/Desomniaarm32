@@ -6,6 +6,7 @@ using MadWizard.Desomnia.Network.Filter;
 using MadWizard.Desomnia.Network.Knocking;
 using MadWizard.Desomnia.Network.Knocking.Events;
 using MadWizard.Desomnia.Network.Knocking.Secrets;
+using MadWizard.Desomnia.Network.Middleware;
 using MadWizard.Desomnia.Network.Neighborhood;
 using MadWizard.Desomnia.Network.Services.Knocking;
 using NetTools;
@@ -34,10 +35,17 @@ namespace MadWizard.Desomnia.Network.Context
             {
                 var scope = parent.BeginLifetimeScope(MatchingScopeLifetimeTags.NetworkKnockLifetimeScopeTag, builder =>
                 {
+                    var label = $"{config.Name}{(secret.Label != null ? $"::{secret.Label}" : "")}"; // maybe mit index?
+
                     builder.RegisterType<KnockStanza>()
-                        .WithParameter(TypedParameter.From($"{config.Name}{(secret.Label != null ? $"::{secret.Label}" : "")}")) // maybe mit index?
+
+                        // TODO does this work?
+                        .OnPreparing(e => e.Parameters = [TypedParameter.From(secret)])
+                        .ConfigurePipeline(p => p.Use(new DefaultKnockSecretBuilder()))
+                        //.WithParameter(TypedParameter.From(BuildSharedSecret(secret)))
+
+                        .WithParameter(TypedParameter.From(label)) 
                         .WithParameter(TypedNamedResolvedParameter<IKnockDetector>.FindBy(knockMethod))
-                        .WithParameter(TypedParameter.From(BuildSharedSecret(secret)))
                         .WithParameter(TypedParameter.From(new IPPort(knockProtocol, knockPort)))
                         .WithParameter(TypedParameter.From(knockTimeout))
                         .SingleInstance()
@@ -96,30 +104,6 @@ namespace MadWizard.Desomnia.Network.Context
 
                 _targetRange.RemoveAddressRange(range);
             }
-        }
-
-        private SharedSecret BuildSharedSecret(SharedSecretData data)
-        {
-            byte[]? key = null;
-            byte[]? authKey = null;
-
-            string defaultEncoding = data.Encoding ?? "UTF-8";
-
-            if (data.Key is KeyData keyData)
-            {
-                key = SharedSecret.TryConvert(keyData.Text, keyData.Encoding ?? defaultEncoding);
-
-                if (data.AuthKey is KeyData authKeyData)
-                {
-                    authKey = SharedSecret.TryConvert(authKeyData.Text, authKeyData.Encoding ?? defaultEncoding);
-                }
-            }
-            else
-            {
-                key = SharedSecret.TryConvert(data.Text, defaultEncoding);
-            }
-
-            return new SharedSecret(key ?? throw new Exception($"Invalid SecretKey = '{data.Label}'"), authKey);
         }
     }
 }

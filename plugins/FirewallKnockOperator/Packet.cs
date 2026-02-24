@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 {
-    internal class FKOData
+    internal class Packet
     {
         static readonly char[] NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -19,17 +19,17 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 
         public byte[]? Digest { get; set; }
 
-        public FKOData(string plaintext)
+        public Packet(string plaintext)
         {
             var split = plaintext.Split(':');
 
             Random = split[0];
-            Username = FKO.DecodeBase64Str(split[1]);
+            Username = Base.DecodeBase64Str(split[1]);
             Timestamp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(split[2]));
             Version = split[3];
             Type = (MessageType)uint.Parse(split[4]);
 
-            var splitMessage = FKO.DecodeBase64Str(split[5]).Split(',');
+            var splitMessage = Base.DecodeBase64Str(split[5]).Split(',');
             SourceAddress = IPAddress.Parse(splitMessage[0]);
 
             if (splitMessage.Length > 1 && splitMessage[1] is string port)
@@ -46,10 +46,10 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
                 };
             }
 
-            Digest = split.Length > 6 ? FKO.DecodeBase64(split[6]) : null;
+            Digest = split.Length > 6 ? Base.DecodeBase64(split[6]) : null;
         }
 
-        public FKOData(IPAddress source, IPPort? target)
+        public Packet(IPAddress source, IPPort? target)
         {
             Random = string.Join(null, RandomNumberGenerator.GetItems(NUMBERS, 16));
 
@@ -80,7 +80,7 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 
             plaintext += Random;
             plaintext += ":";
-            plaintext += FKO.EncodeBase64Str(Username);
+            plaintext += Base.EncodeBase64Str(Username);
             plaintext += ":";
             plaintext += Timestamp.ToUnixTimeSeconds();
             plaintext += ":";
@@ -88,7 +88,7 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
             plaintext += ":";
             plaintext += (uint)Type;
             plaintext += ":";
-            plaintext += FKO.EncodeBase64Str(Message);
+            plaintext += Base.EncodeBase64Str(Message);
 
             return plaintext;
         }
@@ -99,7 +99,7 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 
             if (Digest is not null)
             {
-                str += $":{FKO.EncodeBase64(Digest)}";
+                str += $":{Base.EncodeBase64(Digest)}";
             }
 
             return str;

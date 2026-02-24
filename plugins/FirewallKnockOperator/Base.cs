@@ -1,9 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿using MadWizard.Desomnia.Network.Knocking.Secrets;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 {
-    internal abstract class FKO
+    internal abstract class Base
     {
         const int IV_LENGTH = 16;
 
@@ -53,6 +54,11 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
             byte[] iv = [.. derived.Skip(keyLen).Take(ivLen)];
 
             return (key, iv);
+        }
+
+        protected static byte[] CalculateHMAC(string cipherB64, HMAC? auth)
+        {
+            return auth?.ComputeHash(Encoding.ASCII.GetBytes(cipherB64)) ?? [];
         }
     }
 }

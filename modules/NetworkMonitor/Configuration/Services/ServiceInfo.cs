@@ -2,6 +2,7 @@
 using MadWizard.Desomnia.Network.Configuration.Filter;
 using MadWizard.Desomnia.Network.Configuration.Options;
 using MadWizard.Desomnia.Network.Filter.Rules;
+using MadWizard.Desomnia.Network.Knocking.Secrets;
 using System.Net;
 
 namespace MadWizard.Desomnia.Network.Configuration.Services
@@ -33,6 +34,7 @@ namespace MadWizard.Desomnia.Network.Configuration.Services
         //                      KnockSecret
         internal string?        KnockSecret { get; set; }
         internal string?        KnockSecretAuth { get; set; }
+        internal DigestType?    KnockSecretAuthType { get; set; }
         internal string?        KnockEncoding { get; set; }
 
         public KnockOptions? MakeKnockOptions()
@@ -51,7 +53,11 @@ namespace MadWizard.Desomnia.Network.Configuration.Services
                     Repeat = KnockRepeat,
                     Timeout = KnockTimeout ?? throw new NullReferenceException("knockTimeout"),
 
-                    Secret = new(KnockSecret, KnockSecretAuth, KnockEncoding ?? throw new NullReferenceException("knockEncoding"))
+                    Secret = new(
+                        KnockSecret, 
+                        KnockSecretAuth,
+                        KnockSecretAuthType ?? throw new NullReferenceException("knockSecretAuthType"),
+                        KnockEncoding ?? throw new NullReferenceException("knockEncoding"))
                 };
             }
             catch (NullReferenceException)

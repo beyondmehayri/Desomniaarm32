@@ -36,17 +36,18 @@ namespace MadWizard.Desomnia.Network.Middleware
         {
             foreach (var service in configHost.Services)
             {
-                service.KnockMethod     ??= configHost.KnockMethod      ?? config.KnockMethod;
-                service.KnockProtocol   ??= configHost.KnockProtocol    ?? config.KnockProtocol;
-                service.KnockPort       ??= configHost.KnockPort        ?? config.KnockPort;
+                service.KnockMethod         ??= configHost.KnockMethod          ?? config.KnockMethod;
+                service.KnockProtocol       ??= configHost.KnockProtocol        ?? config.KnockProtocol;
+                service.KnockPort           ??= configHost.KnockPort            ?? config.KnockPort;
 
-                service.KnockDelay      ??= configHost.KnockDelay       ?? config.KnockDelay;
-                service.KnockRepeat     ??= configHost.KnockRepeat      ?? config.KnockRepeat;
-                service.KnockTimeout    ??= configHost.KnockTimeout     ?? config.KnockTimeout;
+                service.KnockDelay          ??= configHost.KnockDelay           ?? config.KnockDelay;
+                service.KnockRepeat         ??= configHost.KnockRepeat          ?? config.KnockRepeat;
+                service.KnockTimeout        ??= configHost.KnockTimeout         ?? config.KnockTimeout;
 
-                service.KnockSecret     ??= configHost.KnockSecret      ?? config.KnockSecret; 
-                service.KnockSecretAuth ??= configHost.KnockSecretAuth  ?? config.KnockSecretAuth;
-                service.KnockEncoding   ??= configHost.KnockEncoding    ?? config.KnockEncoding;
+                service.KnockSecret         ??= configHost.KnockSecret          ?? config.KnockSecret;
+                service.KnockSecretAuth     ??= configHost.KnockSecretAuth      ?? config.KnockSecretAuth;
+                service.KnockSecretAuthType ??= configHost.KnockSecretAuthType  ?? config.KnockSecretAuthType;
+                service.KnockEncoding       ??= configHost.KnockEncoding        ?? config.KnockEncoding;
             }
 
         }

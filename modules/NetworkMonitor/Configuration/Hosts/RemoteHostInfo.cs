@@ -1,4 +1,5 @@
 ﻿using MadWizard.Desomnia.Network.Configuration.Options;
+using MadWizard.Desomnia.Network.Knocking.Secrets;
 using System.Net;
 
 namespace MadWizard.Desomnia.Network.Configuration.Hosts
@@ -27,19 +28,20 @@ namespace MadWizard.Desomnia.Network.Configuration.Hosts
         #endregion
 
         #region                 KnockOptions
-        internal string?        KnockMethod     { get; set; }
+        internal string?        KnockMethod         { get; set; }
 
-        internal IPProtocol?    KnockProtocol   { get; set; }
-        internal ushort?        KnockPort       { get; set; }
+        internal IPProtocol?    KnockProtocol       { get; set; }
+        internal ushort?        KnockPort           { get; set; }
 
-        internal TimeSpan?      KnockDelay      { get; set; }
-        internal TimeSpan?      KnockRepeat     { get; set; }
-        internal TimeSpan?      KnockTimeout    { get; set; }
+        internal TimeSpan?      KnockDelay          { get; set; }
+        internal TimeSpan?      KnockRepeat         { get; set; }
+        internal TimeSpan?      KnockTimeout        { get; set; }
 
         //                      KnockSecret
-        internal string?        KnockSecret     { get; set; }
-        internal string?        KnockSecretAuth { get; set; }
-        internal string?        KnockEncoding   { get; set; }
+        internal string?        KnockSecret         { get; set; }
+        internal string?        KnockSecretAuth     { get; set; }
+        internal DigestType?    KnockSecretAuthType { get; set; }
+        internal string?        KnockEncoding       { get; set; }
         #endregion
 
         #region     PingOptions
