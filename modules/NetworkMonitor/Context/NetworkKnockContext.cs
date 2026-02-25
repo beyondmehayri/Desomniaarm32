@@ -8,6 +8,7 @@ using MadWizard.Desomnia.Network.Knocking.Events;
 using MadWizard.Desomnia.Network.Knocking.Secrets;
 using MadWizard.Desomnia.Network.Neighborhood;
 using MadWizard.Desomnia.Network.Services.Knocking;
+using Microsoft.Extensions.Logging;
 using NetTools;
 using System.Net;
 
@@ -15,6 +16,8 @@ namespace MadWizard.Desomnia.Network.Context
 {
     internal class NetworkKnockContext : Context
     {
+        public required ILogger<NetworkKnockContext> Logger { private get; init; }
+
         readonly NetworkSegment _targetNetwork;
         readonly NetworkHostRange _targetRange;
 

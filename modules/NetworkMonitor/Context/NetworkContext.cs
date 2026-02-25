@@ -1,14 +1,18 @@
 ﻿using Autofac;
 using Autofac.Features.Metadata;
 using MadWizard.Desomnia.Network.Configuration;
+using MadWizard.Desomnia.Network.Context.Parameters;
 using MadWizard.Desomnia.Network.Context.Watch;
 using MadWizard.Desomnia.Network.Filter;
 using MadWizard.Desomnia.Network.Filter.Rules;
+using MadWizard.Desomnia.Network.Impersonation;
 using MadWizard.Desomnia.Network.Knocking;
 using MadWizard.Desomnia.Network.Manager;
 using MadWizard.Desomnia.Network.Middleware;
 using MadWizard.Desomnia.Network.Neighborhood;
+using MadWizard.Desomnia.Network.Trace;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Net.NetworkInformation;
 
 namespace MadWizard.Desomnia.Network.Context
@@ -125,6 +129,15 @@ namespace MadWizard.Desomnia.Network.Context
                         .AsImplementedInterfaces()
                         .InstancePerNetwork()
                         .AsSelf();
+                }
+
+                if (config.Hosts.Any(h => h.Trace))
+                {
+                    string[] hosts = [.. config.Hosts.Where(h => h.Trace).Select(h => h.Name)];
+
+                    builder.RegisterType<TraceService>()
+                        .WithParameter(TypedParameter.From(new TraceService.Options() { Hosts = hosts }))
+                        .AsImplementedInterfaces();
                 }
 
                 RegisterDiscovery(builder, config);

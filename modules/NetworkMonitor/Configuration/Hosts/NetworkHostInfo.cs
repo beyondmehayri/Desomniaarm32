@@ -5,11 +5,13 @@ namespace MadWizard.Desomnia.Network.Configuration.Hosts
 {
     public class NetworkHostInfo : IPAddressInfo
     {
-        public required string  Name        { get; set; }
-        public          string? HostName    { get; set; }
+        public AutoDiscoveryType?   AutoDetect  { get; set; }
 
-        public PhysicalAddress? MAC         { get; set; }
+        public required string      Name        { get; set; }
+        public          string?     HostName    { get; set; }
 
-        public AutoDiscoveryType? AutoDetect { get; set; }
+        public PhysicalAddress?     MAC         { get; set; }
+
+        public bool                 Trace       { get; set; } = false;
     }
 }

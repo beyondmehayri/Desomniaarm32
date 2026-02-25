@@ -106,10 +106,11 @@ namespace MadWizard.Desomnia.Network.Configuration
         public IList<NetworkHostInfo>           Host        { get; private set; } = [];
 
         // Host-Ranges
-        public IList<NetworkHostRangeInfo>          HostRange           { get; private set; } = [];
-        public IList<DynamicHostRangeInfo>          DynamicHostRange    { get; private set; } = [];
+        public IList<NetworkHostRangeInfo>      HostRange           { get; private set; } = [];
+        public IList<DynamicHostRangeInfo>      DynamicHostRange    { get; private set; } = [];
 
-        public IEnumerable<NetworkHostRangeInfo>    Ranges => HostRange.Concat(DynamicHostRange).Concat(ForeignHostFilterRule?.DynamicHostRange ?? []);
+        public IEnumerable<NetworkHostRangeInfo> Ranges => HostRange.Concat(DynamicHostRange).Concat(ForeignHostFilterRule?.DynamicHostRange ?? []);
+        public IEnumerable<NetworkHostInfo> Hosts => Router.Concat(Host).Concat(RemoteHost).Concat(RemoteHost.SelectMany(r => r.VirtualHost));
 
         // Filter-Rules (networkwide)
         public ForeignHostFilterRuleInfo? ForeignHostFilterRule { get; set; }
