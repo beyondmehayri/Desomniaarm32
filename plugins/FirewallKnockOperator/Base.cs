@@ -65,9 +65,24 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
             {
                 switch (secret.AuthType)
                 {
+                    case DigestType.MD5:
+                        return new HMACMD5(secret.AuthKey);
+
+                    case DigestType.SHA1:
+                        return new HMACSHA1(secret.AuthKey);
+
                     case DigestType.SHA256:
                     case DigestType.Default:
                         return new HMACSHA256(secret.AuthKey);
+                    case DigestType.SHA384:
+                        return new HMACSHA384(secret.AuthKey);
+                    case DigestType.SHA512:
+                        return new HMACSHA512(secret.AuthKey);
+
+                    case DigestType.SHA3_256:
+                        return new HMACSHA3_256(secret.AuthKey);
+                    case DigestType.SHA3_512:
+                        return new HMACSHA3_512(secret.AuthKey);
 
                     default:
                         throw new NotImplementedException(secret.AuthType.ToString());
