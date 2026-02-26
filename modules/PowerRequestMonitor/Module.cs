@@ -13,7 +13,7 @@ namespace MadWizard.Desomnia.PowerRequest
             {
                 builder.RegisterType<PowerRequestMonitor>()
                     .OnlyIf(reg => reg.IsRegistered(new TypedService(typeof(IPowerManager))))
-                    .WithParameter(new TypedParameter(typeof(PowerRequestMonitorConfig), config))
+                    .WithParameter(TypedParameter.From(Config.PowerRequestMonitor.RequestFilterRule))
                     .AsImplementedInterfaces()
                     .SingleInstance()
                     .AsSelf();

@@ -6,25 +6,27 @@ using System.Text.RegularExpressions;
 
 namespace MadWizard.Desomnia.PowerRequest
 {
-    public class PowerRequestMonitor(PowerRequestMonitorConfig config, IPowerManager power) : IInspectable, IStartable
+    public class PowerRequestMonitor(IPowerManager power) : IInspectable, IStartable
     {
         public required ILogger<PowerRequestMonitor> Logger { get; set; }
 
+        public required IEnumerable<PowerRequestFilterRule> Rules { private get; init; }
+
         void IStartable.Start()
         {
-            Logger.LogDebug("Startup complete");
+            Logger.LogDebug($"Startup complete; {Rules.Count()} filter rules found.");
         }
 
         IEnumerable<UsageToken> IInspectable.Inspect(TimeSpan interval)
         {
             var filteredRequests = power.Where(ShouldMonitorRequest);
 
-            if (config.Request.Any())
+            if (Rules.Any())
             {
                 foreach (var request in filteredRequests)
-                    foreach (var info in config.Request)
-                        if (Matches(request, info.Pattern))
-                            yield return new PowerRequestToken(info.Name);
+                    foreach (var rule in Rules.Where(rule => rule.Type == FilterRuleType.Must))
+                        if (Matches(request, rule.Pattern))
+                            yield return new PowerRequestToken(rule.Name);
             }
             else if (filteredRequests.Any()) // if there aren't any requests configured, any power request will match
             {
@@ -34,7 +36,7 @@ namespace MadWizard.Desomnia.PowerRequest
 
         private bool ShouldMonitorRequest(IPowerRequest request)
         {
-            foreach (var filter in config.RequestFilter)
+            foreach (var filter in Rules.Where(rule => rule.Type == FilterRuleType.MustNot))
                 if (Matches(request, filter.Pattern))
                     return false;
 
