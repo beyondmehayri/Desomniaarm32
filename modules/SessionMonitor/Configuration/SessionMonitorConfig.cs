@@ -67,7 +67,7 @@ namespace MadWizard.Desomnia.Session.Configuration
         public ScheduledAction? OnLock { get; set; }
         public ScheduledAction? OnLogout { get; set; }
 
-        public IList<SessionProcessGroupInfo> Process { get; set; } = [];
+        public IList<SessionProcessWatchInfo> Process { get; set; } = [];
     }
 
     public class SessionMonitorConfig : SessionMonitorConfig<SessionMonitorConfig, SessionWatchDescriptor>

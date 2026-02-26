@@ -4,17 +4,17 @@ using MadWizard.Desomnia.Process.Manager;
 
 namespace MadWizard.Desomnia.Process
 {
-    public abstract class ProcessGroup(ProcessGroupInfo info) : Resource
+    public abstract class ProcessWatch(ProcessWatchInfo info) : Resource
     {
         private DateTime _lastMeasureTime;
         private TimeSpan _lastProcessorTime;
 
+        protected string Name => info.Name;
+
         protected abstract IEnumerable<IProcess> EnumerateProcesses();
 
-        protected virtual ProcessUsage CreateUsageToken(double usage)
-        {
-            return new ProcessUsage(info.Name, usage);
-        }
+        protected virtual ProcessUsage CreateUsageToken(double usage) => new(Name, usage);
+        protected virtual ProcessUsage CreateUsageToken(TimeSpan time) => new(Name, time);
 
         protected IEnumerable<IProcess> SelectProcesses()
         {
@@ -30,7 +30,7 @@ namespace MadWizard.Desomnia.Process
                     yield return process;
             }
 
-            if (info.WithChildren)
+            if (info.WatchChildren)
                 foreach (var process in processes)
                 {
                     if (parents.Contains(process))
@@ -42,17 +42,18 @@ namespace MadWizard.Desomnia.Process
                 }
         }
 
-        private double MeasureUsage()
+        private double MeasureUsage(out TimeSpan time)
         {
             DateTime measureTime = DateTime.UtcNow;
-            TimeSpan processorTime = SelectProcesses().Aggregate(TimeSpan.Zero, (time, process) => time + process.NativeProcess.TotalProcessorTime);
+
+            var processorTime = SelectProcesses().Aggregate(TimeSpan.Zero, (time, process) => time + process.NativeProcess.TotalProcessorTime);
 
             try
             {
-                var deltaProcessorTime = (processorTime - _lastProcessorTime).TotalMilliseconds;
-                var deltaMeasureTime = (measureTime - _lastMeasureTime).TotalMilliseconds;
+                time = (processorTime - _lastProcessorTime);
+                var timeElapsed = (measureTime - _lastMeasureTime);
 
-                return (deltaProcessorTime / (Environment.ProcessorCount * deltaMeasureTime)) * 100;
+                return time.TotalMilliseconds / (Environment.ProcessorCount * timeElapsed.TotalMilliseconds);
             }
             finally
             {
@@ -63,19 +64,31 @@ namespace MadWizard.Desomnia.Process
 
         protected override IEnumerable<UsageToken> InspectResource(TimeSpan interval)
         {
-            var usage = MeasureUsage();
+            var usage = MeasureUsage(out TimeSpan time);
 
-            if (usage > info.Threshold)
+            if (info.MinCPU.AbsoluteTime is TimeSpan minTime)
             {
-                yield return CreateUsageToken(usage);
+                if (time > minTime)
+                {
+                    yield return CreateUsageToken(time);
+                }
+            }
+            else if (info.MinCPU.RelativeUsage is double minUsage)
+            {
+                if (usage > minUsage)
+                {
+                    yield return CreateUsageToken(usage);
+                }
             }
         }
 
         [ActionHandler("stop")]
-        internal void HandleActionStop()
+        internal void HandleActionStop(TimeSpan timeout = default) // TODO implement passing of timeout
         {
             foreach (var process in SelectProcesses())
-                process.Stop();
+            {
+                process.Stop(timeout);
+            }
         }
     }
 }

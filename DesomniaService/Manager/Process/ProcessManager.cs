@@ -29,8 +29,6 @@ namespace MadWizard.Desomnia.Process.Manager
             return new ProcessManagerView(this) { Filter = processes => processes.Where(p => p.SessionId == sid) };
         }
 
-        
-
         internal class ProcessExt(System.Diagnostics.Process process) : IProcess
         {
             internal ProcessExt(int id) : this(System.Diagnostics.Process.GetProcessById(id)) { }
@@ -63,16 +61,16 @@ namespace MadWizard.Desomnia.Process.Manager
                 }
             }
 
-            public async Task Stop(TimeSpan? timeout = null)
+            public async Task Stop(TimeSpan timeout = default)
             {
                 // try gracefull shutdown
                 process.CloseMainWindow();
 
-                if (timeout.HasValue && timeout.Value.TotalMilliseconds > 0)
+                if (timeout.TotalMilliseconds > 0)
                 {
                     try
                     {
-                        await process.WaitForExitAsync(new CancellationTokenSource((int)timeout.Value.TotalMilliseconds).Token);
+                        await process.WaitForExitAsync(new CancellationTokenSource((int)timeout.TotalMilliseconds).Token);
                     }
                     catch (TimeoutException)
                     {

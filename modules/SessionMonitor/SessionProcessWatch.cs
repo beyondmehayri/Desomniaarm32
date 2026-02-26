@@ -5,12 +5,12 @@ using MadWizard.Desomnia.Session.Manager;
 
 namespace MadWizard.Desomnia.Session
 {
-    public class SessionProcessGroup : ProcessGroup
+    public class SessionProcessWatch : ProcessWatch
     {
         [EventContext]
         public ISession Session { get; private init; }
 
-        public SessionProcessGroup(SessionWatch watch, SessionProcessGroupInfo info) : base(info)
+        public SessionProcessWatch(SessionWatch watch, SessionProcessWatchInfo info) : base(info)
         {
             Session = watch.Session;
 
@@ -22,13 +22,7 @@ namespace MadWizard.Desomnia.Session
 
         protected override IEnumerable<IProcess> EnumerateProcesses() => Session.Processes;
 
-        protected override ProcessUsage CreateUsageToken(double usage)
-        {
-            var token = base.CreateUsageToken(usage);
-
-            token.UserName = Session.UserName;
-
-            return token;
-        }
+        protected override SessionProcessUsage CreateUsageToken(double usage) => new(Name, usage) { UserName = Session.UserName };
+        protected override SessionProcessUsage CreateUsageToken(TimeSpan time) => new(Name, time) { UserName = Session.UserName };
     }
 }

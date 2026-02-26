@@ -65,7 +65,7 @@ namespace MadWizard.Desomnia.Service.Bridge.Notification
         {
             var info = token switch
             {
-                SessionUsageToken session => new UsageTokenInfo
+                SessionUsage session => new UsageTokenInfo
                 {
                     DisplayName = session.IsRemote ? @$"{session.ClientName}\{session.UserName}" : session.UserName,
                     TypeName = session.IsRemote ? "Remote Desktop Session" : "User Session",

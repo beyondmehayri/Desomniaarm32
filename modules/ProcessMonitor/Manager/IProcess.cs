@@ -25,6 +25,6 @@
             return false;
         }
 
-        Task Stop(TimeSpan? timeout = null);
+        Task Stop(TimeSpan timeout = default);
     }
 }

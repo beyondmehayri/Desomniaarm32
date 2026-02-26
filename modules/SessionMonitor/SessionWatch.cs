@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MadWizard.Desomnia.Session
 {
-    public class SessionWatch : ResourceMonitor<SessionProcessGroup>
+    public class SessionWatch : ResourceMonitor<SessionProcessWatch>
     {
         [EventContext]
         public ISession Session { get; private init; }
@@ -69,7 +69,7 @@ namespace MadWizard.Desomnia.Session
 
             foreach (var info in desc.Process)
             {
-                this.StartTracking(new SessionProcessGroup(this, info));
+                this.StartTracking(new SessionProcessWatch(this, info));
             }
         }
 
@@ -77,13 +77,13 @@ namespace MadWizard.Desomnia.Session
         {
             if (Session.IsRemoteConnected && !Clock.Remote)
             {
-                yield return new SessionUsageToken(Session.UserName, Session.ClientName);
+                yield return new SessionUsage(Session.UserName, Session.ClientName);
             }
             else if ((Clock.Disconnected || Session.IsConnected) && Session.IdleTime is TimeSpan time)
             {
                 if (time < (MaxIdleTime ?? interval))
                 {
-                    yield return new SessionUsageToken(Session.UserName, Session.ClientName);
+                    yield return new SessionUsage(Session.UserName, Session.ClientName);
                 }
             }
 

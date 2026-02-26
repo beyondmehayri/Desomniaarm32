@@ -2,15 +2,15 @@
 
 namespace MadWizard.Desomnia.Process.Configuration
 {
-    public class ProcessGroupInfo
+    public class ProcessWatchInfo
     {
         public required string Name { get; set; }
 
         public Regex Pattern => Text != null ? new Regex(Text) : throw new ArgumentNullException("pattern");
 
-        public bool WithChildren { get; set; } = false;
+        public bool WatchChildren { get; set; } = false;
 
-        public double Threshold { get; set; }
+        public CPUThreshold MinCPU { get; set; }
 
         private string? Text { get; set; }
     }

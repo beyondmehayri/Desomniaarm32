@@ -3,7 +3,7 @@ using MadWizard.Desomnia.Process.Configuration;
 
 namespace MadWizard.Desomnia.Session.Configuration
 {
-    public class SessionProcessGroupInfo : ProcessGroupInfo
+    public class SessionProcessWatchInfo : ProcessWatchInfo
     {
         public DelayedAction? OnSessionIdle { get; set; }
         public DelayedAction? OnSessionDemand { get; set; }

@@ -2,6 +2,6 @@
 {
     public class ProcessMonitorConfig
     {
-        public IList<ProcessGroupInfo> Process { get; set; } = [];
+        public IList<ProcessWatchInfo> Process { get; set; } = [];
     }
 }

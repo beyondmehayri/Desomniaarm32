@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MadWizard.Desomnia.Process
 {
-    public class ProcessMonitor(ProcessMonitorConfig config, IProcessManager manager) : ResourceMonitor<ProcessGroup>, IStartable
+    public class ProcessMonitor(ProcessMonitorConfig config, IProcessManager manager) : ResourceMonitor<ProcessWatch>, IStartable
     {
         public required ILogger<ProcessMonitor> Logger { get; set; }
 
@@ -14,13 +14,13 @@ namespace MadWizard.Desomnia.Process
         {
             foreach (var info in config.Process)
             {
-                StartTracking(new SystemProcessGroup(manager, info));
+                StartTracking(new SystemProcessWatch(manager, info));
             }
 
             Logger.LogDebug("Startup complete");
         }
 
-        private class SystemProcessGroup(IProcessManager manager, ProcessGroupInfo info) : ProcessGroup(info)
+        private class SystemProcessWatch(IProcessManager manager, ProcessWatchInfo info) : ProcessWatch(info)
         {
             protected override IEnumerable<IProcess> EnumerateProcesses() => manager;
         }

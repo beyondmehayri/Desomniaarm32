@@ -1,6 +1,6 @@
 ﻿namespace MadWizard.Desomnia.Session
 {
-    public class SessionUsageToken(string userName, string? clientName = null) : UsageToken
+    public class SessionUsage(string userName, string? clientName = null) : UsageToken
     {
         public string UserName => userName;
         public string? ClientName => clientName;
