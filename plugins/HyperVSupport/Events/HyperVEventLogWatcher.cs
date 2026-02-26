@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using MadWizard.Desomnia.Network.HyperV.Manager;
 using MadWizard.Desomnia.Network.Manager;
+using MadWizard.Desomnia.Network.Neighborhood;
 using Microsoft.Extensions.Logging;
+using NLog;
 using System.Diagnostics.Eventing.Reader;
 
 namespace MadWizard.Desomnia.Network.HyperV.Events
@@ -39,24 +41,32 @@ namespace MadWizard.Desomnia.Network.HyperV.Events
             {
                 if (FindMachine(record) is HyperVVirtualMachine vm && vm.Semaphore.Wait(0))
                 {
-                    try
+                    using (Logger.BeginScope(new Dictionary<string, object> { ["VM"] = vm.Name, ["Event"] = record.Id }))
                     {
-                        switch ((HyperVEventID)record.Id)
+                        var eventId = (HyperVEventID)record.Id;
+                        var eventLabel = $"{eventId}({record.Id}) @ '{vm.Name}'";
+
+                        try
                         {
-                            case HyperVEventID.VM_STARTED:      vm.State = VirtualMachineState.Running;     break;
-                            case HyperVEventID.VM_RESTORED:     vm.State = VirtualMachineState.Running;     break;
-                            case HyperVEventID.VM_SUSPENDED:    vm.State = VirtualMachineState.Suspended;   break;
-                            case HyperVEventID.VM_SHUTDOWN:     vm.State = VirtualMachineState.Stopped;     break;
-                            case HyperVEventID.VM_STOPPED:      vm.State = VirtualMachineState.Stopped;     break;
+                            Logger.LogTrace($"{eventLabel}");
+
+                            switch (eventId)
+                            {
+                                case HyperVEventID.VM_STARTED:      vm.State = VirtualMachineState.Running;     break;
+                                case HyperVEventID.VM_RESTORED:     vm.State = VirtualMachineState.Running;     break;
+                                case HyperVEventID.VM_SUSPENDED:    vm.State = VirtualMachineState.Suspended;   break;
+                                case HyperVEventID.VM_SHUTDOWN:     vm.State = VirtualMachineState.Stopped;     break;
+                                case HyperVEventID.VM_STOPPED:      vm.State = VirtualMachineState.Stopped;     break;
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex, $"Could update VM state for event ID = {record.Id}");
-                    }
-                    finally
-                    {
-                        vm.Semaphore.Release();
+                        catch (Exception ex)
+                        {
+                            Logger.LogError(ex, $"{eventLabel}: Could not update VM state");
+                        }
+                        finally
+                        {
+                            vm.Semaphore.Release();
+                        }
                     }
                 }
             }
