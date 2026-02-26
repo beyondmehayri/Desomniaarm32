@@ -61,28 +61,28 @@ namespace MadWizard.Desomnia.Network.FirewallKnockOperator
 
         protected static HMAC? AuthMethod(SharedSecret secret)
         {
-            if (secret.AuthKey != null)
+            if (secret.AuthKey is byte[] key)
             {
                 switch (secret.AuthType)
                 {
                     case DigestType.MD5:
-                        return new HMACMD5(secret.AuthKey);
+                        return new HMACMD5(key);
 
                     case DigestType.SHA1:
-                        return new HMACSHA1(secret.AuthKey);
+                        return new HMACSHA1(key);
 
                     case DigestType.SHA256:
                     case DigestType.Default:
-                        return new HMACSHA256(secret.AuthKey);
+                        return new HMACSHA256(key);
                     case DigestType.SHA384:
-                        return new HMACSHA384(secret.AuthKey);
+                        return new HMACSHA384(key);
                     case DigestType.SHA512:
-                        return new HMACSHA512(secret.AuthKey);
+                        return new HMACSHA512(key);
 
                     case DigestType.SHA3_256:
-                        return new HMACSHA3_256(secret.AuthKey);
+                        return new HMACSHA3_256(key);
                     case DigestType.SHA3_512:
-                        return new HMACSHA3_512(secret.AuthKey);
+                        return new HMACSHA3_512(key);
 
                     default:
                         throw new NotImplementedException(secret.AuthType.ToString());
