@@ -55,8 +55,8 @@ If you also use Desomnia for sending SPA packets, you need to match these keys i
 
     </RemoteHost>
 
-Symmetric encryption key
-++++++++++++++++++++++++
+Symmetric encryption
+++++++++++++++++++++
 
 The implementation of fwknop supports the use of **128** / **192** / **256** bit `AES`_ encryption keys. These keys are represented by a byte sequence of the respective length and should be as cryptographically random as possible.
 

@@ -1,7 +1,7 @@
 Interface selection
 ===================
 
-Desomnia can be configured to monitor one or more network interfaces installed in your system. Upon service startup and everytime your network configuration changes, the configuration of all connected interfaces are compared for a match with one of your ``<NetworkMonitor>`` configurations. To determine which configuration should be used for which, there are several options:
+Desomnia can be configured to monitor one or more network interfaces installed in your system. Upon service startup and everytime your network configuration changes, the configuration of all connected interfaces are compared for a match with one of your ``<NetworkMonitor>`` configurations. To determine which configuration should be used for which interface, there are several options:
 
 Automatic selection
 -------------------
@@ -12,7 +12,7 @@ Automatic selection
         <!-- hosts, etc. -->
     </NetworkMonitor>
 
-If you do not specify a value for either 'interface' or 'network', Desomnia will automatically monitor all interfaces configured with a standard gateway. This is usually the interface connected to your local network, and, unless you have multiple interfaces up at the same time, it is typically the only interface with this description. In that case, all interfaces will be monitored using the same configuration. This could be exactly what you want if you have wired and wireless links to the same network, at the same time.
+If you do not specify a value for either ``interface`` or ``network``, Desomnia will automatically monitor all interfaces configured with a standard gateway. This is usually the interface connected to your local network, and, unless you have multiple interfaces up at the same time, it is typically the only interface with this description. In that case, all interfaces will be monitored using the same configuration. This could be exactly what you want if you have wired and wireless links to the same network, at the same time.
 
 By network
 ----------
