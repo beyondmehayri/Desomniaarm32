@@ -1,4 +1,4 @@
-Param([string]$ComponentsDirectory)
+Param([string]$ComponentsDirectory = "./components")
 
 $env:VERSION_NET = "9.0"
 

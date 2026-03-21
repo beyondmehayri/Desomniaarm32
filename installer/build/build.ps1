@@ -1,9 +1,7 @@
 param([string]$Version = "")
 
-$components = "./components"
-
 # Build application components
-. "./buildApplication.ps1" -ComponentsDirectory $components
+. "./buildApplication.ps1"
 
 # Build Installer
 . "./buildSetup.ps1" -Version $Version
