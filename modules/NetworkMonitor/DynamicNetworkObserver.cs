@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Nito.AsyncEx;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Text.RegularExpressions;
 
 namespace MadWizard.Desomnia.Network
 {
@@ -198,8 +199,9 @@ namespace MadWizard.Desomnia.Network
 
         private static bool MatchesByName(this NetworkInterface @interface, string name)
         {
-            if (@interface.Id.Contains(name))
+            if (Regex.IsMatch(@interface.Id, name))
                 return true;
+
             if (@interface.Name.Equals(name))
                 return true;
 
