@@ -41,7 +41,7 @@ namespace MadWizard.Desomnia.Network.Configuration.Hosts
         internal string?        KnockSecret         { get; set; }
         internal string?        KnockSecretAuth     { get; set; }
         internal DigestType?    KnockSecretAuthType { get; set; }
-        internal string?        KnockEncoding       { get; set; }
+        internal string?        KnockSecretEncoding { get; set; }
         #endregion
 
         #region     PingOptions

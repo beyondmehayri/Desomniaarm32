@@ -27,9 +27,9 @@ namespace MadWizard.Desomnia.Network.Configuration
 
         // Options
         #region Network :: AutoDiscoveryOptions
-        public AutoDiscoveryType AutoDetect { get; set; } = AutoDiscoveryType.Nothing;
-        private TimeSpan AutoTimeout { get; set; } = TimeSpan.FromSeconds(5);
-        private TimeSpan? AutoRefresh { get; set; }
+        public AutoDiscoveryType    AutoDetect          { get; set; } = AutoDiscoveryType.Nothing;
+        private TimeSpan            AutoTimeout         { get; set; } = TimeSpan.FromSeconds(5);
+        private TimeSpan?           AutoRefresh         { get; set; }
 
         public DiscoveryOptions MakeAutoDiscoveryOptions() => new()
         {
@@ -39,8 +39,8 @@ namespace MadWizard.Desomnia.Network.Configuration
         #endregion
 
         #region Network :: SweepOptions
-        private TimeSpan SweepFrequency { get; set; } = TimeSpan.FromMinutes(1);
-        private TimeSpan SweepDelay { get; set; } = TimeSpan.FromMinutes(5);
+        private TimeSpan            SweepFrequency      { get; set; } = TimeSpan.FromMinutes(1);
+        private TimeSpan            SweepDelay          { get; set; } = TimeSpan.FromMinutes(5);
 
         public SweepOptions MakeSweepOptions() => new()
         {
@@ -50,46 +50,46 @@ namespace MadWizard.Desomnia.Network.Configuration
         #endregion
 
         #region Network :: DemandOptions 
-        internal TimeSpan DemandTimeout { get; set; } = TimeSpan.FromSeconds(5);
-        internal bool DemandForward { get; set; } = true;
-        internal int DemandParallel { get; set; } = 1;
+        internal TimeSpan           DemandTimeout       { get; set; } = TimeSpan.FromSeconds(5);
+        internal bool               DemandForward       { get; set; } = true;
+        internal int                DemandParallel      { get; set; } = 1;
 
-        internal AddressAdvertisment Advertise { get; set; } = AddressAdvertisment.Lazy;
-        internal bool AdvertiseIfStopped { get; set; } = true;
+        internal AddressAdvertisment Advertise          { get; set; } = AddressAdvertisment.Lazy;
+        internal bool               AdvertiseIfStopped  { get; set; } = true;
         #endregion
 
         #region Network :: KnockOptions
-        internal string KnockMethod { get; set; } = "plain";
+        internal string             KnockMethod         { get; set; } = "plain";
 
-        internal ushort KnockPort { get; set; } = 62201;
-        internal IPProtocol KnockProtocol { get; set; } = IPProtocol.UDP;
+        internal ushort             KnockPort           { get; set; } = 62201;
+        internal IPProtocol         KnockProtocol       { get; set; } = IPProtocol.UDP;
 
-        internal TimeSpan KnockDelay { get; set; } = TimeSpan.FromSeconds(0.5);
-        internal TimeSpan? KnockRepeat { get; set; }
-        internal TimeSpan KnockTimeout { get; set; } = TimeSpan.FromSeconds(10);
-        // Network :: KnockSecret
-        internal string? KnockSecret { get; set; }
-        internal string? KnockSecretAuth { get; set; }
-        internal DigestType KnockSecretAuthType { get; set; } = default;
-        internal string KnockEncoding { get; set; } = "UTF-8";
+        internal TimeSpan           KnockDelay          { get; set; } = TimeSpan.FromSeconds(0.5);
+        internal TimeSpan?          KnockRepeat         { get; set; }
+        internal TimeSpan           KnockTimeout        { get; set; } = TimeSpan.FromSeconds(10);
+        // Network ::               KnockSecret
+        internal string?            KnockSecret         { get; set; }
+        internal string?            KnockSecretAuth     { get; set; }
+        internal DigestType         KnockSecretAuthType { get; set; } = default;
+        internal string             KnockSecretEncoding { get; set; } = "UTF-8";
         #endregion
 
         #region Network :: PingOptions
-        internal TimeSpan PingTimeout { get; set; } = TimeSpan.FromMilliseconds(500);
-        internal TimeSpan? PingFrequency { get; set; }
+        internal TimeSpan           PingTimeout         { get; set; } = TimeSpan.FromMilliseconds(500);
+        internal TimeSpan?          PingFrequency       { get; set; }
         #endregion
 
         #region Network :: WakeOptions
-        internal WakeType   WakeType            { get; set; } = WakeType.Auto;
-        internal ushort     WakePort            { get; set; } = 9;
-        internal TimeSpan   WakeTimeout         { get; set; } = TimeSpan.FromSeconds(10);
-        internal TimeSpan?  WakeRepeat          { get; set; }
+        internal WakeType           WakeType            { get; set; } = WakeType.Auto;
+        internal ushort             WakePort            { get; set; } = 9;
+        internal TimeSpan           WakeTimeout         { get; set; } = TimeSpan.FromSeconds(10);
+        internal TimeSpan?          WakeRepeat          { get; set; }
         #endregion
 
         #region Network :: WatchOptions
-        internal WatchMode WatchMode { get; set; } = WatchMode.Normal;
-        internal ushort? WatchUDPPort { get; set; } = null;
-        internal bool WatchYield { get; set; } = false;
+        internal WatchMode          WatchMode           { get; set; } = WatchMode.Normal;
+        internal ushort?            WatchUDPPort        { get; set; } = null;
+        internal bool               WatchYield          { get; set; } = false;
 
         public WatchOptions MakeWatchOptions() => new()
         {

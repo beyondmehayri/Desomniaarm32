@@ -35,28 +35,28 @@ namespace MadWizard.Desomnia.Network.Configuration.Services
         internal string?        KnockSecret { get; set; }
         internal string?        KnockSecretAuth { get; set; }
         internal DigestType?    KnockSecretAuthType { get; set; }
-        internal string?        KnockEncoding { get; set; }
+        internal string?        KnockSecretEncoding { get; set; }
 
         public KnockOptions? MakeKnockOptions()
         {
             if (KnockMethod != null)
                 return new() // wird von network -> remote host -> service übertragen
                 {
-                    Method = KnockMethod ?? throw new NullReferenceException("knockMethod"),
+                    Method = KnockMethod    ?? throw new NullReferenceException("knockMethod"),
 
                     Port = new(
-                        KnockProtocol ?? throw new NullReferenceException("knockProtocol"),
-                        KnockPort ?? throw new NullReferenceException("knockPort")),
+                        KnockProtocol       ?? throw new NullReferenceException("knockProtocol"),
+                        KnockPort           ?? throw new NullReferenceException("knockPort")),
 
-                    Delay = KnockDelay ?? throw new NullReferenceException("knockDelay"),
+                    Delay = KnockDelay      ?? throw new NullReferenceException("knockDelay"),
                     Repeat = KnockRepeat,
-                    Timeout = KnockTimeout ?? throw new NullReferenceException("knockTimeout"),
+                    Timeout = KnockTimeout  ?? throw new NullReferenceException("knockTimeout"),
 
                     Secret = new(
                         KnockSecret, 
                         KnockSecretAuth,
                         KnockSecretAuthType ?? throw new NullReferenceException("knockSecretAuthType"),
-                        KnockEncoding ?? throw new NullReferenceException("knockEncoding"))
+                        KnockSecretEncoding ?? throw new NullReferenceException("knockSecretEncoding"))
                 };
 
             return null; // ist kein remote service

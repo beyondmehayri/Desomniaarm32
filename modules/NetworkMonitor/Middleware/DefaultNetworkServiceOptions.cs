@@ -47,7 +47,7 @@ namespace MadWizard.Desomnia.Network.Middleware
                 service.KnockSecret         ??= configHost.KnockSecret          ?? config.KnockSecret;
                 service.KnockSecretAuth     ??= configHost.KnockSecretAuth      ?? config.KnockSecretAuth;
                 service.KnockSecretAuthType ??= configHost.KnockSecretAuthType  ?? config.KnockSecretAuthType;
-                service.KnockEncoding       ??= configHost.KnockEncoding        ?? config.KnockEncoding;
+                service.KnockSecretEncoding       ??= configHost.KnockSecretEncoding        ?? config.KnockSecretEncoding;
             }
 
         }
