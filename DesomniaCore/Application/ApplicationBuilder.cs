@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Config;
 using NLog.Extensions.Logging;
+using NLog.Layouts;
 using NLog.Targets;
 using System.Diagnostics;
 
@@ -19,7 +20,9 @@ namespace MadWizard.Desomnia
 
         readonly List<Module> _modules = [];
 
-        protected virtual string DefaultLogConsoleLayout => "${pad:padding=5:inner=${level:uppercase=true}} :: ${message} ${exception}";
+        protected virtual string DefaultLogLevelFormat => "${pad:padding=5:inner=${level:uppercase=true}}";
+        protected virtual string DefaultLogFileLayout => "${longdate} " + DefaultLogLevelFormat + " ${logger:shortName=true} :: ${message} ${exception}";
+        protected virtual string DefaultLogConsoleLayout => DefaultLogLevelFormat + " :: ${message} ${exception}";
 
         protected virtual string DefaultLogPath
         {
@@ -66,15 +69,19 @@ namespace MadWizard.Desomnia
 
             _builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 
-            // Fallback if no config file has been found
             if (LogManager.Configuration is LoggingConfiguration config)
             {
                 if (!config.Variables.ContainsKey("logDir"))
                 {
                     config.Variables["logDir"] = DefaultLogPath;
                 }
+
+                if (!config.Variables.ContainsKey("sharedLayout"))
+                {
+                    config.Variables["sharedLayout"] = DefaultLogFileLayout;
+                }
             }
-            else
+            else // Fallback if no config file has been found
             {
                 config = new LoggingConfiguration();
             }
