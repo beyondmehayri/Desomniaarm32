@@ -11,6 +11,7 @@ const
   
 var
   IsReinstall: Boolean;
+  ShouldReconfigure: Boolean;
   
 function IsNpcapInstalled(): Boolean;
 var
@@ -69,17 +70,6 @@ begin
 
   Result := True;
 end;
-
-procedure CopyInstallerTo(TargetPath: String);
-var
-  SourceFile: String;
-begin
-  SourceFile := ExpandConstant('{srcexe}');
-    
-  ForceDirectories(ExtractFileDir(TargetPath));
-  FileCopy(SourceFile, TargetPath, False);
-end;
-
 
 procedure AddUninstallerArguments(Arguments: String);
 var

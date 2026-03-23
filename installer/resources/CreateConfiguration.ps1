@@ -232,7 +232,6 @@ if ($duo = $ini["DuoStreamMonitor"])
     Add-XmlElement $root "DuoStreamMonitor" $null @{
         onInstanceDemand = $duo["demand"]   -replace '\s', ''
         onInstanceIdle   = $duo["idle"]     -replace '\s', ''
-
     }
 }
 
@@ -243,6 +242,8 @@ if (-not (Test-Path $xmlDirectory)) {
 
 # Save XML
 $xml.Save($XmlPath)
+
+$ini["config:monitor.xml"]["SHA256"] = (Get-FileHash $XmlPath -Algorithm SHA256).Hash
 
 Write-Host "XML configuration created at $XmlPath"
 

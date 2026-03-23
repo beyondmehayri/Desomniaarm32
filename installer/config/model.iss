@@ -1,5 +1,8 @@
 [Code]
 
+const
+  MONITOR_CONFIG_PATH = '{app}\config\monitor.xml';
+
 type
   TServiceConfig = record
     Name: String;
@@ -47,11 +50,6 @@ type
 type THostServiceConfig = record
   Hosts: array of THostConfig;
   Index: Integer;
-end;
-
-function HasExistingConfig(): Boolean;
-begin
-  Result := FileExists(ExpandConstant('{app}\config\monitor.xml'));
 end;
 
 procedure SanitizeHostIndex(var Config: THostServiceConfig);

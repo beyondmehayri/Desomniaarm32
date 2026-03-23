@@ -21,6 +21,7 @@
   #define MyOutputBaseFilename "Desomnia"
 #endif
 
+
 #include "dependencies/functions.iss"
 
 #include "dependencies/windows/api.iss"
@@ -31,11 +32,11 @@
 #include "dependencies/windows/menu.iss"
 #include "dependencies/windows/registry.iss"
 
+#include "config/model.iss"
+
 #include "dependencies/version.iss"
 #include "dependencies/installer.iss"
 #include "dependencies/virtual.iss"
-
-#include "config.iss"
 
 #include "layout/FormGridLayout.iss"
 
@@ -48,7 +49,8 @@
 #include "settings/NetworkSettings.iss"
 #include "settings/VirtualMachineSettings.iss"
 
-#include "export.iss"
+#include "config/import.iss"
+#include "config/export.iss"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -127,6 +129,8 @@ Source: "build\components\plugins\FirewallKnockOperator\*"; DestDir: "{app}\plug
 Source: "build\components\plugins\DesomniaServiceBridge\*"; DestDir: "{app}\plugins\DesomniaServiceBridge"; Components: plugins\DesomniaServiceBridge; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
 
 [INI]
+Filename: {tmp}\prefs.ini; Section: "config:monitor.xml"; Key: "SHA256"; String: "?";
+
 Filename: {tmp}\prefs.ini; Section: SystemMonitor; Key: version; String: 1; Check: ShouldConfigureDesomnia
 Filename: {tmp}\prefs.ini; Section: SystemMonitor; Key: timeout; String: {code:SystemMonitorPrefs|Timeout}; Check: ShouldConfigureDesomnia
 Filename: {tmp}\prefs.ini; Section: SystemMonitor; Key: idle; String: {code:SystemMonitorPrefs|IdleAction}; Check: ShouldConfigureDesomnia
@@ -207,9 +211,10 @@ var
 function InitializeSetup: Boolean;
 begin
   IsReinstall := RegKeyExists(HKEY_LOCAL_MACHINE, UninstallKey);
+
   
   VirtualProviders := EnumerateVirtualMachineProviders;
-  
+
   Result := True;
 end;
 
@@ -225,20 +230,46 @@ begin
   
 end;
 
+<event('CurPageChanged')>
+procedure AfterPageChanged(CurPageID: Integer);
+begin
+  if CurPageID = wpSelectComponents then
+  begin
+    if IsReinstall and not ShouldReconfigure then
+    begin
+      if TryImportConfig(ExpandConstant('{commonappdata}\{#MyAppName}\Installer\prefs.ini')) then
+      begin
+        // ShouldReconfigure := True; // TODO later
+      end
+    end;
+  end;
+end;
+
 <event('CurStepChanged')>
 procedure PostInstallSetup(CurStep: TSetupStep);
+var
+  PrefsFile: String;
+  InstallerFile: String;
+  InstallerDataDir: String;
+
 begin
+  PrefsFile := ExpandConstant('{tmp}\prefs.ini');
+  InstallerFile := ExpandConstant('{srcexe}');
+  InstallerDataDir := ExpandConstant('{commonappdata}\{#MyAppName}\Installer');
+
   if CurStep = ssInstall then
   begin
     ExtractTemporaryFile('prefs.ini');
 
-    ExportHostServiceConfig(ExpandConstant('{tmp}\prefs.ini'));
+    ExportHostServiceConfig(PrefsFile);
   end;
 
   if CurStep = ssPostInstall then
   begin
+    ForceDirectories(InstallerDataDir);
+    FileCopy(InstallerFile, InstallerDataDir + '\setup.exe', False);
+    FileCopy(PrefsFile, InstallerDataDir + '\prefs.ini', False);
     AddUninstallerArguments('/SILENT /CONTROLPANEL');
-    CopyInstallerTo(ExpandConstant('{commonappdata}\{#MyAppName}\Installer\setup.exe'))
   end;
 end;
 

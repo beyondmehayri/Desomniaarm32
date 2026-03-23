@@ -241,7 +241,7 @@ end;
 
 function ShouldConfigureDesomnia(): Boolean;
 begin
-  Result := not IsReinstall or not HasExistingConfig();
+  Result := not IsReinstall or ShouldReconfigure;
   
   if Debugging then
     Result := True;
