@@ -1,14 +1,22 @@
 ﻿using Autofac;
+using Autofac.Core;
+using MadWizard.Desomnia.Session.Manager;
 
 namespace MadWizard.Desomnia.Service.Windows
 {
-    internal class WindowsServiceModule(CancellationToken restartToken) : Desomnia.Module
+    internal class WindowsServiceModule : Desomnia.Module
     {
         protected override void Load(Autofac.ContainerBuilder builder)
         {
             // Attaching Windows Control
             builder.RegisterType<WindowsService>()
-                .WithParameter(TypedParameter.From(restartToken))
+                .AsImplementedInterfaces()
+                .SingleInstance()
+                .AsSelf();
+
+            builder.RegisterType<TerminalServicesManager>()
+                .OnlyIf(reg => reg.IsRegistered(new TypedService(typeof(WindowsService))))
+                .PropertiesAutowired()
                 .AsImplementedInterfaces()
                 .SingleInstance()
                 .AsSelf();

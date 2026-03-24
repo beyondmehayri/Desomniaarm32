@@ -17,8 +17,6 @@ namespace MadWizard.Desomnia.Service
     {
         public required ILogger<WindowsService> Logger { private get; init; }
 
-        public required CancellationToken RestartToken { private get; init; }
-
         public WindowsService(IHostEnvironment environment, IHostApplicationLifetime lifetime, ILoggerFactory logging, IOptions<HostOptions> options)
             : base(environment, lifetime, logging, options)
         {
@@ -47,11 +45,6 @@ namespace MadWizard.Desomnia.Service
 
         protected override void OnStop()
         {
-            if (RestartToken.IsCancellationRequested)
-            {
-                ScheduleSelfRestart();
-            }
-
             Logger.LogInformation("Shutdown requested...");
 
             base.OnStop();
@@ -70,16 +63,15 @@ namespace MadWizard.Desomnia.Service
             SessionChanged?.Invoke(this, changeDescription);
         }
 
-        private void ScheduleSelfRestart()
+        internal void ScheduleSelfRestart()
         {
             var ps = $@"
-                $service = '{this.ServiceName}'
                 do {{
                     Start-Sleep -Seconds 1
-                    $s = Get-Service -Name $service -ErrorAction SilentlyContinue
+                    $s = Get-Service -Name {this.ServiceName} -ErrorAction SilentlyContinue
                 }} while ($s -and $s.Status -ne 'Stopped')
 
-                Start-Service -Name $service
+                Start-Service -Name {this.ServiceName}
             ";
 
             System.Diagnostics.Process.Start(new ProcessStartInfo

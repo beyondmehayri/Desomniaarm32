@@ -1,7 +1,10 @@
 ﻿using Autofac;
+using Autofac.Core;
 using MadWizard.Desomnia;
 using MadWizard.Desomnia.Logging;
+using MadWizard.Desomnia.Service;
 using MadWizard.Desomnia.Service.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using System.Diagnostics;
@@ -45,7 +48,7 @@ try
 
             if (isRunningAsService)
             {
-                builder.RegisterModule(new WindowsServiceModule(watcher.Token));
+                builder.RegisterModule<WindowsServiceModule>();
             }
 
             builder.RegisterModule<MadWizard.Desomnia.CoreModule>();
@@ -62,14 +65,24 @@ try
 
             builder.LoadConfiguration(configPath);
 
-            builder.Build().RunAsync(watcher.Token).Wait();
-        }
+            IHost host = builder.Build();
 
-        if (isRunningAsService && watcher.HasChanged)
-        {
-            EventLog.WriteEntry(EVENT_LOG_SOURCE, $"Configuration file changed. Restarting...", EventLogEntryType.Information);
+            var service = host.Services.GetService(typeof(WindowsService)) as WindowsService;
 
-            return -1;
+            host.RunAsync(watcher.Token).Wait();
+
+            /*
+             * Once the SCM has been notifed about the service stop, there is no turning back.
+             * Therefore we must schedule the service to restart itself after having stopped gracefully.
+             */
+            if (watcher.HasChanged && service is not null)
+            {
+                EventLog.WriteEntry(EVENT_LOG_SOURCE, $"Configuration file changed. Restarting...", EventLogEntryType.Information);
+
+                service.ScheduleSelfRestart();
+
+                return -1;
+            }
         }
     }
     while (watcher.HasChanged);
