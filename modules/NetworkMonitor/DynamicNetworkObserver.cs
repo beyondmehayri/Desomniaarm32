@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Nito.AsyncEx;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace MadWizard.Desomnia.Network
@@ -180,6 +181,8 @@ namespace MadWizard.Desomnia.Network
         {
             if (@interface.OperationalStatus != OperationalStatus.Up)
                 return false;
+            if (@interface.HasOnlyAPIPA()) // link is broken or without DHCP
+                return false;
 
             if (config.Interface != null || config.Network != null)
             {
@@ -193,8 +196,31 @@ namespace MadWizard.Desomnia.Network
             }
             else
             {
-                return @interface.GetIPProperties().GatewayAddresses.Count > 0; // if config is not more specific, match interfaces with a gateway
+                return @interface.HasGateway(); // if config is not more specific, match interfaces with a gateway
             }
+        }
+
+        private static bool HasOnlyAPIPA(this NetworkInterface @interface)
+        {
+            bool? onlyAPIPA = null;
+            foreach (var addr in @interface.GetIPProperties().UnicastAddresses)
+            {
+                if (addr.Address.AddressFamily == AddressFamily.InterNetwork && addr.Address.IsAPIPA())
+                {
+                    onlyAPIPA = true;
+
+                    continue;
+                }
+
+                return false;
+            }
+
+            return onlyAPIPA == true;
+        }
+
+        private static bool HasGateway(this NetworkInterface @interface)
+        {
+            return @interface.GetIPProperties().GatewayAddresses.Count > 0;
         }
 
         private static bool MatchesByName(this NetworkInterface @interface, string name)
