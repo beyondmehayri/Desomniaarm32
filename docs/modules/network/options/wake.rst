@@ -45,3 +45,11 @@ wakeRepeat
 :inherited:
 
 This option specifies whether to resend the Magic Packet and how long to wait between each attempt, until the configured ``wakeTimeout`` has elapsed.
+
+wakePing
+++++++++
+
+:inherited:
+:default: ``false``
+
+This option specifies whether to actively ping the target host during a wake operation. Each individual ping will timeout after the configured ``pingTimeout``, until the configured ``wakeTimeout`` has elapsed. If you do not configure this parameter, the NetworkMonitor will try to passively listen for a sign that the target host has successfully been woken up. The target host will actively pinged in any case, if it is not part of the local subnet.
