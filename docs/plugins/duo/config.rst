@@ -23,7 +23,7 @@ If you need to set attributes for an individual instance, you can then add an ``
       onInstanceLogin=""
       onInstanceStarted=""
       onInstanceStopped=""
-      onInstanceLogoff="">
+      onInstanceLogout="">
 
       <Instance name="Neo" ... />
       <Instance name="Thomas Anderson" ... />
@@ -87,13 +87,13 @@ onInstanceStop
 
 .. include:: attributes/stop.rst
 
-onInstanceLogoff
+onInstanceLogout
 ++++++++++++++++
 
 :⚡️ event:
 :inherited:
 
-.. include:: attributes/logoff.rst
+.. include:: attributes/logout.rst
 
 Instance
 --------
@@ -107,7 +107,7 @@ Instance
       onLogin=""
       onStart=""
       onStop=""
-      onLogoff=""
+      onLogout=""
     />
 
 name
@@ -153,9 +153,9 @@ onStop
 
 .. include:: attributes/stop.rst
 
-onLogoff
+onLogout
 ++++++++
 
 :⚡️ event:
 
-.. include:: attributes/logoff.rst
+.. include:: attributes/logout.rst

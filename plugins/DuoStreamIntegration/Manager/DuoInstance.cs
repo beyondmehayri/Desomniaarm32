@@ -1,15 +1,14 @@
+using MadWizard.Desomnia.Network.Demand;
 using MadWizard.Desomnia.Service.Duo.Configuration;
 using MadWizard.Desomnia.Service.Duo.Sunshine;
 using MadWizard.Desomnia.Session.Manager;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
 namespace MadWizard.Desomnia.Service.Duo.Manager
 {
     public class DuoInstance : ResourceMonitor<SunshineServiceWatch>
     {
-        private bool? _running = null;
-        private ISession? _session = null;
-
         private readonly RegistryKey Key;
 
         internal readonly SemaphoreSlim Semaphore = new(1, 1);
@@ -22,7 +21,7 @@ namespace MadWizard.Desomnia.Service.Duo.Manager
             AddEventAction(nameof(Login), info.OnLogin);
             AddEventAction(nameof(Started), info.OnStart);
             AddEventAction(nameof(Stopped), info.OnStop);
-            AddEventAction(nameof(Logoff), info.OnLogoff);
+            AddEventAction(nameof(Logout), info.OnLogout);
 
             Key = key;
         }
@@ -53,13 +52,13 @@ namespace MadWizard.Desomnia.Service.Duo.Manager
 
         public bool? IsRunning
         {
-            get => _running;
+            get => field;
 
             internal set
             {
-                if (_running != value)
+                if (field != value)
                 {
-                    if (_running != null)
+                    if (field != null)
                     {
                         if (value == true)
                             TriggerEvent(nameof(Started));
@@ -68,30 +67,38 @@ namespace MadWizard.Desomnia.Service.Duo.Manager
                     }
                 }
 
-                _running = value;
+                field = value;
             }
         }
+
 
         [EventContext]
         public ISession? Session
         {
-            get => _session;
+            get => field;
 
             internal set
             {
-                _session = value;
+                if (field != null && value == null)
+                {
+                    field = value;
 
-                if (value == null)
-                    TriggerEvent(nameof(Logoff));
-                else if (value != null)
+                    TriggerEvent(nameof(Logout));
+                }
+
+                if (field == null && value != null)
+                {
+                    field = value;
+
                     TriggerEvent(nameof(Login));
+                }
             }
         }
 
         public event EventInvocation? Login;
         public event EventInvocation? Started;
         public event EventInvocation? Stopped;
-        public event EventInvocation? Logoff;
+        public event EventInvocation? Logout;
 
         public bool HasInitiated(ISession session)
         {
@@ -105,19 +112,23 @@ namespace MadWizard.Desomnia.Service.Duo.Manager
             return base.StartTracking(service, adopt);
         }
 
-        private async Task NetworkService_Demand(Event demand)
+        private async Task NetworkService_Demand(Event @event)
         {
-            await TriggerDemandAsync();
+            if (@event is Network.Demand.DemandEvent) // don't trigger for inspection events
+            {
+                await TriggerDemandAsync();
+            }
         }
 
         protected override Task TriggerEventAsync(Event @event)
         {
             if (@event.Type == nameof(Idle) && IsRunning != true)
                 return Task.CompletedTask; // only trigger "Idle" events if the instance is running
-            if (@event.Type == nameof(Demand) && IsRunning == true)
+
+            if (@event.Type == nameof(Demand) && (IsRunning == true || @event is InspectionEvent))
                 return Task.CompletedTask; // only trigger "Demand" events if the instance is NOT running
 
-            return base.TriggerEventAsync(@event); // only trigger "Idle" events if the instance is running
+            return base.TriggerEventAsync(@event);
         }
 
         protected override IEnumerable<UsageToken> InspectResource(TimeSpan interval)

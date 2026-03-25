@@ -1,1 +1,0 @@
-This event is triggered when the Windows session associated with the Duo instance logs off. This occurs *after* the Duo instance has stopped.

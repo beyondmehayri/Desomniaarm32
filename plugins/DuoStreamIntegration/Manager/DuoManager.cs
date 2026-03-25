@@ -125,7 +125,7 @@ namespace MadWizard.Desomnia.Service.Duo.Manager
                 info.OnLogin ??= config.OnInstanceLogin;
                 info.OnStart ??= config.OnInstanceStarted;
                 info.OnStop ??= config.OnInstanceStopped;
-                info.OnLogoff ??= config.OnInstanceLogoff;
+                info.OnLogout ??= config.OnInstanceLogout;
 
                 instances.Add(new DuoInstance(info, instancesKey.OpenSubKey(name!, writable: true)!));
             }
