@@ -41,7 +41,7 @@ namespace MadWizard.Desomnia.Network.Discovery.BuiltIn
                  */
                 else if (Network[arp.SenderHardwareAddress] is NetworkHost hostByMAC && hostByMAC is not NetworkRouter)
                 {
-                    if (!arp.SenderProtocolAddress.IsEmpty() && !arp.SenderProtocolAddress.IsAPIPA())
+                    if (!arp.SenderProtocolAddress.IsEmpty()) // TODO APIPA? && !arp.SenderProtocolAddress.IsAPIPA())
                     {
                         AdvertiseAddress(hostByMAC, arp.SenderProtocolAddress);
                     }

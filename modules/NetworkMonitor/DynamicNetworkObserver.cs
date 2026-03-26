@@ -181,8 +181,10 @@ namespace MadWizard.Desomnia.Network
         {
             if (@interface.OperationalStatus != OperationalStatus.Up)
                 return false;
-            if (@interface.HasOnlyAPIPA()) // link is broken or without DHCP
-                return false;
+
+            // TODO APIPA ?
+            //if (@interface.HasOnlyAPIPA()) // link is broken or without DHCP
+            //    return false;
 
             if (config.Interface != null || config.Network != null)
             {
@@ -205,14 +207,15 @@ namespace MadWizard.Desomnia.Network
             bool? onlyAPIPA = null;
             foreach (var addr in @interface.GetIPProperties().UnicastAddresses)
             {
-                if (addr.Address.AddressFamily == AddressFamily.InterNetwork && addr.Address.IsAPIPA())
+                if (addr.Address.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    onlyAPIPA = true;
-
-                    continue;
+                    if (addr.Address.IsAPIPA())
+                        onlyAPIPA = true;
+                    else
+                        return false;
                 }
-
-                return false;
+                else
+                    continue;
             }
 
             return onlyAPIPA == true;
