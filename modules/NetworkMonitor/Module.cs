@@ -7,7 +7,7 @@ using MadWizard.Desomnia.Network.Demand.Filter;
 using MadWizard.Desomnia.Network.Discovery;
 using MadWizard.Desomnia.Network.Filter;
 using MadWizard.Desomnia.Network.Filter.Rules;
-using MadWizard.Desomnia.Network.Impersonation;
+using MadWizard.Desomnia.Network.Address;
 using MadWizard.Desomnia.Network.Knocking;
 using MadWizard.Desomnia.Network.Knocking.Methods;
 using MadWizard.Desomnia.Network.Manager;

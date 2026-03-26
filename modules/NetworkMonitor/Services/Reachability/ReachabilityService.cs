@@ -233,7 +233,7 @@ namespace MadWizard.Desomnia.Network.Reachability
             ping.SendPingAsync(ip, TimeSpan.FromMilliseconds(100), options: new(64, true));
         }
 
-        private void SendARPRequest(IPAddress ip)
+        internal void SendARPRequest(IPAddress ip)
         {
             if (ip.AddressFamily != AddressFamily.InterNetwork)
                 throw new ArgumentException($"Only IPv4 is supported; got '{ip}'");
@@ -252,7 +252,7 @@ namespace MadWizard.Desomnia.Network.Reachability
             Device.SendPacket(request);
         }
 
-        private void SendNDPNeighborSolicitation(IPAddress ip)
+        internal void SendNDPNeighborSolicitation(IPAddress ip)
         {
             if (ip.AddressFamily != AddressFamily.InterNetworkV6)
                 throw new ArgumentException($"Only IPv6 is supported; got '{ip}'");

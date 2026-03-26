@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using MadWizard.Desomnia.Network.Configuration.Options;
 using MadWizard.Desomnia.Network.Demand;
-using MadWizard.Desomnia.Network.Impersonation;
+using MadWizard.Desomnia.Network.Address;
 using MadWizard.Desomnia.Network.Knocking;
 using MadWizard.Desomnia.Network.Reachability;
 using MadWizard.Desomnia.Ressource.Events;

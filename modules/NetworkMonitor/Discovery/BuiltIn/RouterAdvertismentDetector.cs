@@ -2,6 +2,7 @@
 using MadWizard.Desomnia.Network.Configuration.Hosts;
 using MadWizard.Desomnia.Network.Configuration.Options;
 using MadWizard.Desomnia.Network.Context;
+using MadWizard.Desomnia.Network.Extensions;
 using MadWizard.Desomnia.Network.Neighborhood;
 using MadWizard.Desomnia.Network.Services;
 using Microsoft.Extensions.Logging;
@@ -30,13 +31,8 @@ namespace MadWizard.Desomnia.Network.Discovery.BuiltIn
 
                 async void Capture(object? sender, EthernetPacket packet)
                 {
-                    await ProcessPacketMaybeAsync(packet);
-
-                    try { semaphore.Release(); }
-                    catch (ObjectDisposedException)
-                    {
-                        // ignore if semaphore is already disposed
-                    }
+                    if (await ProcessPacketMaybeAsync(packet))
+                        semaphore.MaybeRelease();
                 }
 
                 Device.EthernetCaptured += Capture;
@@ -58,7 +54,7 @@ namespace MadWizard.Desomnia.Network.Discovery.BuiltIn
         void INetworkService.ProcessPacket(EthernetPacket packet) => ProcessPacketMaybeAsync(packet);
         #pragma warning restore CS4014
 
-        private async Task ProcessPacketMaybeAsync(EthernetPacket packet)
+        private async Task<bool> ProcessPacketMaybeAsync(EthernetPacket packet)
         {
             if (packet.Extract<NdpPacket>() is NdpRouterAdvertisementPacket ndp)
             {
@@ -69,8 +65,12 @@ namespace MadWizard.Desomnia.Network.Discovery.BuiltIn
                     Logger.LogDebug($"Received NDP router advertisement from {ip} -> {mac.ToHexString()} with lifetime = {lifetime}");
 
                     await RememberRouterAddress(mac, ip, lifetime);
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         private async Task RememberRouterAddress(PhysicalAddress mac, IPAddress ip, TimeSpan lifetime)

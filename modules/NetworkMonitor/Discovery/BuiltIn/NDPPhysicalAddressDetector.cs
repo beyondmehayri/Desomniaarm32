@@ -1,13 +1,32 @@
-﻿using MadWizard.Desomnia.Network.Configuration.Options;
+﻿using MadWizard.Desomnia.Network.Address;
 using MadWizard.Desomnia.Network.Neighborhood;
+using Microsoft.Extensions.Logging;
+using PacketDotNet;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace MadWizard.Desomnia.Network.Discovery.BuiltIn
 {
-    internal class NDPPhysicalAddressDetector(DiscoveryOptions options) : IPhysicalAddressDiscovery
+    internal class NDPPhysicalAddressDetector : PhysicalAddressDetector<NDPPhysicalAddressDetector>
     {
-        async Task IPhysicalAddressDiscovery.DiscoverAddress(NetworkHost host)
-        {
+        public required override ILogger<NDPPhysicalAddressDetector> Logger { protected get; init; }
 
+        protected override AddressFamily Family => AddressFamily.InterNetworkV6;
+
+        protected override void SendRequest(IPAddress ip) => Reachability.SendNDPNeighborSolicitation(ip);
+
+        protected override AddressMapping? AnalyzePacket(EthernetPacket packet)
+        {
+            if (packet.Extract<NdpPacket>() is NdpNeighborAdvertisementPacket ndp)
+            {
+                if (!ndp.TargetAddress.IsEmpty() && ndp.FindSourcePhysicalAddress() is PhysicalAddress mac)
+                {
+                    return new(ndp.TargetAddress, mac);
+                }
+            }
+
+            return null;
         }
     }
 }

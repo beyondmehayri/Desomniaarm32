@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 
-namespace MadWizard.Desomnia.Network.Impersonation
+namespace MadWizard.Desomnia.Network.Address
 {
     public struct AddressMapping
     {

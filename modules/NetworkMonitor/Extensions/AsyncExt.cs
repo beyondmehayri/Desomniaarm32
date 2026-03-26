@@ -9,6 +9,18 @@
             return new SemaphoreLease(semaphore);
         }
 
+        public static int MaybeRelease(this SemaphoreSlim semaphore)
+        {
+            try
+            {
+                return semaphore.Release();
+            }
+            catch (ObjectDisposedException)
+            {
+                return 0; // ignore if semaphore is already disposed
+            }
+        }
+
         private class SemaphoreLease(SemaphoreSlim semaphore) : IDisposable
         {
             public void Dispose() => semaphore.Release();

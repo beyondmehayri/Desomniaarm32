@@ -233,15 +233,6 @@ namespace MadWizard.Desomnia.Network.Context
                 Logger.LogHostPhysicalAddressChanged(host, mac);
             }
 
-            // Dynamically resolve MAC address
-            if (host.PhysicalAddress == null && Scope.ResolveOptional<IPhysicalAddressDiscovery>() is IPhysicalAddressDiscovery discoverMac)
-            {
-                if (autoDetect.HasFlag(AutoDiscoveryType.MAC))
-                {
-                    await discoverMac.DiscoverAddress(host);
-                }
-            }
-
             // Configure static Address addresses
             foreach (var ip in config.IPAddresses)
             {
@@ -258,6 +249,13 @@ namespace MadWizard.Desomnia.Network.Context
                     await discoverIP.DiscoverIPAddresses(host, AddressFamily.InterNetwork);
                 if (autoDetect.HasFlag(AutoDiscoveryType.IPv6))
                     await discoverIP.DiscoverIPAddresses(host, AddressFamily.InterNetworkV6);
+            }
+
+            // Dynamically resolve MAC address
+            if (Scope.ResolveOptional<IPhysicalAddressDiscovery>() is IPhysicalAddressDiscovery discoverMac)
+            {
+                if (autoDetect.HasFlag(AutoDiscoveryType.MAC))
+                    await discoverMac.DiscoverAddress(host);
             }
 
             if (!host.IPAddresses.Any())

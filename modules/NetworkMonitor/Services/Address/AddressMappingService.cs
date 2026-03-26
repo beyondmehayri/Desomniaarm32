@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace MadWizard.Desomnia.Network.Impersonation
+namespace MadWizard.Desomnia.Network.Address
 {
     public class AddressMappingService : INetworkService
     {

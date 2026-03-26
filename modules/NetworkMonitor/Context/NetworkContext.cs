@@ -5,7 +5,7 @@ using MadWizard.Desomnia.Network.Context.Parameters;
 using MadWizard.Desomnia.Network.Context.Watch;
 using MadWizard.Desomnia.Network.Filter;
 using MadWizard.Desomnia.Network.Filter.Rules;
-using MadWizard.Desomnia.Network.Impersonation;
+using MadWizard.Desomnia.Network.Address;
 using MadWizard.Desomnia.Network.Knocking;
 using MadWizard.Desomnia.Network.Manager;
 using MadWizard.Desomnia.Network.Middleware;

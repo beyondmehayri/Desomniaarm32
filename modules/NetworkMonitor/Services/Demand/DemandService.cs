@@ -1,6 +1,6 @@
 ﻿using MadWizard.Desomnia.Network.Configuration.Options;
 using MadWizard.Desomnia.Network.Filter;
-using MadWizard.Desomnia.Network.Impersonation;
+using MadWizard.Desomnia.Network.Address;
 using MadWizard.Desomnia.Network.Neighborhood;
 using MadWizard.Desomnia.Network.Services;
 using Microsoft.Extensions.Logging;
