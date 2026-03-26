@@ -3,7 +3,7 @@ using MadWizard.Desomnia.Power.Manager;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace MadWizard.Desomnia.Power
+namespace MadWizard.Desomnia.Power.Watch
 {
     public class SleepWatch(IPowerManager power) : IStartable
     {
@@ -12,7 +12,7 @@ namespace MadWizard.Desomnia.Power
         private static Stopwatch ClockSleep { get; set; } = new Stopwatch();
         private Stopwatch ClockNap { get; set; } = new Stopwatch();
 
-        public void Start()
+        void IStartable.Start()
         {
             power.Suspended += PowerManager_Suspend;
             power.ResumeSuspended += PowerManager_ResumeSuspend;

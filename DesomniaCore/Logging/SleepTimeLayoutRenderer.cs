@@ -1,4 +1,4 @@
-﻿using MadWizard.Desomnia.Power;
+﻿using MadWizard.Desomnia.Power.Watch;
 using NLog;
 using NLog.LayoutRenderers;
 using System;
