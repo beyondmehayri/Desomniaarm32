@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        name:[ DuoStreamIntegration, HyperVSupport, FirewallKnockOperator ]
+        name: [ DuoStreamIntegration, HyperVSupport, FirewallKnockOperator ]
 
         include:
           - name: DuoStreamIntegration
