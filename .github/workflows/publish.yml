@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         # ONLY building for linux-arm (Raspberry Pi 2 B). Nothing else.
-        arch:[ arm ]
+        arch: [ arm ]
 
     steps:
       - name: Checkout code
