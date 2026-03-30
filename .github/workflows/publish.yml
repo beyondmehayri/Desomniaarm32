@@ -179,7 +179,7 @@ jobs:
   merge-linux-docker:
     name: Create Docker manifest list
     runs-on: ubuntu-latest
-    needs:[ build-linux-docker ]
+    needs: [ build-linux-docker ]
 
     steps:
       - name: Download digests
@@ -270,7 +270,7 @@ jobs:
   build-windows-installer:
     name: Build Windows installer
     runs-on: windows-latest
-    needs:[ build-plugins, build-windows ]
+    needs: [ build-plugins, build-windows ]
 
     steps:
       - name: Checkout code
